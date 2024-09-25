@@ -8,7 +8,10 @@ import (
 func CheckAuth(c *gin.Context) {
 	token, err := c.Request.Cookie("auth")
 	if err != nil || token == nil {
-		c.HTML(http.StatusOK, "login.html", nil)
+		c.JSON(http.StatusOK, gin.H{
+			"auth": "token not hounded",
+		})
+		//c.HTML(http.StatusOK, "login.html", nil)
 		c.Abort()
 		return
 	} else {
