@@ -4,11 +4,9 @@ import (
 	"fmt"
 	"gin_test_prjct/pkg/common/models"
 	"gin_test_prjct/pkg/common/utils"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
-	"time"
 )
 
 type LoginForm struct {
@@ -41,15 +39,7 @@ func (h handler) Login(c *gin.Context) {
 		return
 	}
 
-	claims := models.User{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-			IssuedAt:  time.Now().Unix(),
-			Issuer:    "book-test",
-		},
-	}
-
-	tokenString, err := utils.GenerateToken(claims)
+	tokenString, err := utils.GenerateToken()
 	if err != nil {
 		fmt.Println("Ошибка генерации токена:", err)
 		return
@@ -64,5 +54,6 @@ func (h handler) Login(c *gin.Context) {
 		false,
 		true,
 	)
-	c.Redirect(http.StatusOK, "/")
+	c.JSON(http.StatusOK, &user)
+	//c.Redirect(http.StatusOK, "/")
 }

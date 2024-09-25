@@ -16,15 +16,15 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	}
 
 	r.LoadHTMLGlob("./../templates/*")
-	r.Use(middleware.CheckAuth)
 
 	routes := r.Group("/books")
+	routes.Use(middleware.CheckAuth)
 	routes.POST("/", h.AddBook)
 	routes.GET("/:id", h.GetBook)
 	routes.PUT("/:id", h.UpdateBook)
 	routes.DELETE("/:id", h.DeleteBook)
+	routes.GET("/", h.GetBooks)
 
-	r.GET("/", h.GetBooks)
 	r.POST("/login", h.Login)
 	r.POST("/reg", h.RegisterUser)
 	//r.POST("/signup", h.Signup)

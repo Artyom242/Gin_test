@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"gin_test_prjct/pkg/common/models"
 	"gin_test_prjct/pkg/common/utils"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
-	"time"
 )
 
 type RegForm struct {
@@ -22,11 +21,12 @@ func (h handler) RegisterUser(c *gin.Context) {
 	var dataForm RegForm
 
 	if err := c.ShouldBind(&dataForm); err != nil {
-		c.JSON(http.StatusBadRequest, dataForm)
+		log.Println("form empty")
+		c.JSON(http.StatusBadRequest, &dataForm)
 		return
 	}
 
-	if dataForm.Name != "" || dataForm.Surname != "" || dataForm.Password != "" || dataForm.RepeatPassword != "" {
+	if dataForm.Name == "" || dataForm.Surname == "" || dataForm.Password == "" || dataForm.RepeatPassword == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Все поля обязательны для заполнения"})
 		return
 	}
@@ -39,15 +39,7 @@ func (h handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	claims := models.User{
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-			IssuedAt:  time.Now().Unix(),
-			Issuer:    "book-test",
-		},
-	}
-
-	tokenString, err := utils.GenerateToken(claims)
+	tokenString, err := utils.GenerateToken()
 	if err != nil {
 		fmt.Println("Ошибка генерации токена:", err)
 		return
@@ -56,7 +48,6 @@ func (h handler) RegisterUser(c *gin.Context) {
 	user.Name = dataForm.Name
 	user.Surname = dataForm.Surname
 	user.Password = string(hashPass)
-	user.Name = dataForm.Name
 	user.AuthToken = tokenString
 
 	if result := h.DB.Create(&user); result.Error != nil {
@@ -74,5 +65,6 @@ func (h handler) RegisterUser(c *gin.Context) {
 		true,
 	)
 
-	c.Redirect(http.StatusOK, "/")
+	c.JSON(http.StatusOK, &user)
+	//c.Redirect(http.StatusOK, "/")
 }
