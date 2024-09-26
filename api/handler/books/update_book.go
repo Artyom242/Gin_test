@@ -1,7 +1,7 @@
 package books
 
 import (
-	"gin_test_prjct/pkg/common/models"
+	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -12,7 +12,7 @@ type UpdateBook struct {
 	Description *string `json:"description"`
 }
 
-func (h handler) UpdateBook(c *gin.Context) {
+func (h books.handler) UpdateBook(c *gin.Context) {
 	id := c.Param("id")
 	body := UpdateBook{}
 

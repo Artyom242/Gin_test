@@ -1,9 +1,9 @@
 package main
 
 import (
-	"gin_test_prjct/pkg/common/config"
-	"gin_test_prjct/pkg/common/db"
-	"gin_test_prjct/pkg/controllers/books"
+	"gin_test_prjct/api/handler"
+	"gin_test_prjct/internal/config"
+	"gin_test_prjct/internal/database"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -21,9 +21,9 @@ func main() {
 	log.Printf("Сервер запустится на порту: %s", port)
 
 	r := gin.Default()
-	h := db.Init(dbUrl)
+	h := database.Init(dbUrl)
 
-	books.RegisterRoutes(r, h)
+	handler.RegisterRoutes(r, h)
 
 	r.Run(port)
 }

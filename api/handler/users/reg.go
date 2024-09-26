@@ -1,9 +1,9 @@
-package books
+package users
 
 import (
 	"fmt"
-	"gin_test_prjct/pkg/common/models"
-	"gin_test_prjct/pkg/common/utils"
+	"gin_test_prjct/api/middleware"
+	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -17,7 +17,7 @@ type RegForm struct {
 	RepeatPassword string `json:"repeatPassword"`
 }
 
-func (h handler) RegisterUser(c *gin.Context) {
+func (h Controller.Handler) RegisterUser(c *gin.Context) {
 	var dataForm RegForm
 
 	if err := c.ShouldBind(&dataForm); err != nil {
@@ -39,7 +39,7 @@ func (h handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := utils.GenerateToken()
+	tokenString, err := middleware.GenerateToken()
 	if err != nil {
 		fmt.Println("Ошибка генерации токена:", err)
 		return
@@ -66,5 +66,4 @@ func (h handler) RegisterUser(c *gin.Context) {
 	)
 
 	c.JSON(http.StatusOK, &user)
-	//c.Redirect(http.StatusOK, "/")
 }

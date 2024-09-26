@@ -1,25 +1,27 @@
-package books
+package handler
 
 import (
-	"gin_test_prjct/pkg/common/middleware"
+	"gin_test_prjct/api/handler/books"
+	"gin_test_prjct/api/middleware"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-type handler struct {
+type Handler struct {
 	DB *gorm.DB
 }
 
 func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
-	h := &handler{
+	h := &Handler{
 		DB: db,
 	}
+	BookHandler := books.NewBookHandler(h.DB)
 
 	r.LoadHTMLGlob("./../templates/*")
 
 	routes := r.Group("/books")
 	routes.Use(middleware.CheckAuth)
-	routes.POST("/", h.AddBook)
+	routes.POST("/", BookHandler.AddBook)
 	routes.GET("/:id", h.GetBook)
 	routes.PUT("/:id", h.UpdateBook)
 	routes.DELETE("/:id", h.DeleteBook)
@@ -27,8 +29,5 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 
 	r.POST("/login", h.Login)
 	r.POST("/reg", h.RegisterUser)
-	//r.POST("/signup", h.Signup)
-	//r.GET("/home", h.Home)
-	//r.GET("/premium", h.Premium)
-	//r.GET("/logout", h.Logout)
+	r.GET("/logout", h.Logout)
 }
