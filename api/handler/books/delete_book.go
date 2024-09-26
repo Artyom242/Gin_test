@@ -1,12 +1,12 @@
 package books
 
 import (
-	"gin_test_prjct/pkg/common/models"
+	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func (h handler) GetBook(c *gin.Context) {
+func (h books.handler) DeleteBook(c *gin.Context) {
 	id := c.Param("id")
 
 	var book models.Book
@@ -16,5 +16,7 @@ func (h handler) GetBook(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &book)
+	h.DB.Delete(&book)
+
+	c.Status(http.StatusOK)
 }

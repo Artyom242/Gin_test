@@ -1,8 +1,9 @@
 package books
 
 import (
-	"gin_test_prjct/pkg/common/models"
+	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -12,7 +13,15 @@ type AddBookRequestBody struct {
 	Description string `json:"description"`
 }
 
-func (h handler) AddBook(c *gin.Context) {
+type BookHandler struct {
+	DB *gorm.DB
+}
+
+func NewBookHandler(db *gorm.DB) *BookHandler {
+	return &BookHandler{DB: db}
+}
+
+func (h BookHandler) AddBook(c *gin.Context) {
 	body := AddBookRequestBody{}
 
 	if err := c.BindJSON(&body); err != nil {

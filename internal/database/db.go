@@ -1,7 +1,7 @@
-package db
+package database
 
 import (
-	"gin_test_prjct/pkg/common/models"
+	models2 "gin_test_prjct/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
@@ -14,11 +14,11 @@ func Init(url string) *gorm.DB {
 		log.Fatalln("Не удалось подключиться к БД", err)
 	}
 
-	if err := db.AutoMigrate(&models.Book{}); err != nil {
+	if err := db.AutoMigrate(&models2.Book{}); err != nil {
 		log.Fatalf("Ошибка миграции Book: %v", err)
 	}
 
-	if err := db.AutoMigrate(&models.User{}); err != nil {
+	if err := db.AutoMigrate(&models2.User{}); err != nil {
 		log.Fatalf("Ошибка миграции User: %v", err)
 	}
 

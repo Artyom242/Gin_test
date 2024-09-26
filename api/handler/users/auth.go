@@ -1,9 +1,9 @@
-package books
+package users
 
 import (
 	"fmt"
-	"gin_test_prjct/pkg/common/models"
-	"gin_test_prjct/pkg/common/utils"
+	"gin_test_prjct/api/middleware"
+	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -14,7 +14,7 @@ type LoginForm struct {
 	Password string `json:"password"`
 }
 
-func (h handler) Login(c *gin.Context) {
+func (h books.handler) Login(c *gin.Context) {
 	var dataForm LoginForm
 
 	if err := c.ShouldBind(&dataForm); err != nil {
@@ -39,7 +39,7 @@ func (h handler) Login(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := utils.GenerateToken()
+	tokenString, err := middleware.GenerateToken()
 	if err != nil {
 		fmt.Println("Ошибка генерации токена:", err)
 		return
@@ -55,5 +55,4 @@ func (h handler) Login(c *gin.Context) {
 		true,
 	)
 	c.JSON(http.StatusOK, &user)
-	//c.Redirect(http.StatusOK, "/")
 }
