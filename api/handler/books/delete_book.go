@@ -3,20 +3,21 @@ package books
 import (
 	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
-func (h books.handler) DeleteBook(c *gin.Context) {
+func DeleteBook(c *gin.Context, h *gorm.DB) {
 	id := c.Param("id")
 
 	var book models.Book
 
-	if result := h.DB.First(&book, id); result.Error != nil {
+	if result := h.First(&book, id); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 
-	h.DB.Delete(&book)
+	h.Delete(&book)
 
 	c.Status(http.StatusOK)
 }

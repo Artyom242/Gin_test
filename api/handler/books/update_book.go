@@ -3,18 +3,19 @@ package books
 import (
 	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
-type UpdateBook struct {
+type UpdateBookStruct struct {
 	Title       *string `json:"title"`
 	Author      *string `json:"author"`
 	Description *string `json:"description"`
 }
 
-func (h books.handler) UpdateBook(c *gin.Context) {
+func UpdateBook(c *gin.Context, h *gorm.DB) {
 	id := c.Param("id")
-	body := UpdateBook{}
+	body := UpdateBookStruct{}
 
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
@@ -23,7 +24,7 @@ func (h books.handler) UpdateBook(c *gin.Context) {
 
 	var book models.Book
 
-	if result := h.DB.First(&book, id); result.Error != nil {
+	if result := h.First(&book, id); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
@@ -37,7 +38,7 @@ func (h books.handler) UpdateBook(c *gin.Context) {
 		book.Description = *body.Description
 	}
 
-	h.DB.Save(&book)
+	h.Save(&book)
 
 	c.JSON(http.StatusOK, &book)
 }

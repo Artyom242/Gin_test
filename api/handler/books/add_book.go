@@ -13,15 +13,7 @@ type AddBookRequestBody struct {
 	Description string `json:"description"`
 }
 
-type BookHandler struct {
-	DB *gorm.DB
-}
-
-func NewBookHandler(db *gorm.DB) *BookHandler {
-	return &BookHandler{DB: db}
-}
-
-func (h BookHandler) AddBook(c *gin.Context) {
+func AddBook(c *gin.Context, h *gorm.DB) {
 	body := AddBookRequestBody{}
 
 	if err := c.BindJSON(&body); err != nil {
@@ -35,7 +27,7 @@ func (h BookHandler) AddBook(c *gin.Context) {
 	book.Author = body.Author
 	book.Description = body.Description
 
-	if result := h.DB.Create(&book); result.Error != nil {
+	if result := h.Create(&book); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
