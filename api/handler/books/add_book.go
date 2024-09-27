@@ -7,14 +7,14 @@ import (
 	"net/http"
 )
 
-type AddBookRequestBody struct {
+type AddBookForm struct {
 	Title       string `json:"title"`
 	Author      string `json:"author"`
 	Description string `json:"description"`
 }
 
 func AddBook(c *gin.Context, h *gorm.DB) {
-	body := AddBookRequestBody{}
+	body := AddBookForm{}
 
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)

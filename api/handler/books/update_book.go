@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type UpdateBookStruct struct {
+type UpdateBookForm struct {
 	Title       *string `json:"title"`
 	Author      *string `json:"author"`
 	Description *string `json:"description"`
@@ -15,7 +15,7 @@ type UpdateBookStruct struct {
 
 func UpdateBook(c *gin.Context, h *gorm.DB) {
 	id := c.Param("id")
-	body := UpdateBookStruct{}
+	body := UpdateBookForm{}
 
 	if err := c.BindJSON(&body); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
