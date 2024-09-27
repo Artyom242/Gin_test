@@ -8,6 +8,7 @@ import (
 )
 
 func DeleteBook(c *gin.Context, h *gorm.DB) {
+
 	id := c.Param("id")
 
 	var book models.Book
