@@ -3,11 +3,12 @@ package users
 import (
 	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
-func (h books.handler) Logout(c *gin.Context) {
+func Logout(c *gin.Context, h *gorm.DB) {
 	var user models.User
 
 	cookie, err := c.Cookie("auth")
@@ -15,13 +16,13 @@ func (h books.handler) Logout(c *gin.Context) {
 		log.Println("Error cookie:", err)
 	}
 
-	if result := h.DB.Find(&user).Where("token=?", cookie); result.Error != nil {
+	if result := h.Find(&user).Where("token=?", cookie); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
 	} else {
 		user.AuthToken = ""
 	}
 
-	h.DB.Save(&user)
+	h.Save(&user)
 
 	c.SetCookie(
 		"auth",

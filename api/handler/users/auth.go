@@ -6,6 +6,7 @@ import (
 	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -14,7 +15,7 @@ type LoginForm struct {
 	Password string `json:"password"`
 }
 
-func (h books.handler) Login(c *gin.Context) {
+func Login(c *gin.Context, h *gorm.DB) {
 	var dataForm LoginForm
 
 	if err := c.ShouldBind(&dataForm); err != nil {
@@ -26,10 +27,9 @@ func (h books.handler) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Все поля обязательны для заполнения"})
 		return
 	}
-
 	var user models.User
 
-	if result := h.DB.Where("name=?", dataForm.Name).First(&user); result.Error != nil {
+	if result := h.Where("name=?", dataForm.Name).First(&user); result.Error != nil {
 		c.JSON(http.StatusNotFound, result.Error)
 		return
 	}

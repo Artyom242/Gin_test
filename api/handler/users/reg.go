@@ -6,6 +6,7 @@ import (
 	"gin_test_prjct/internal/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
@@ -17,7 +18,7 @@ type RegForm struct {
 	RepeatPassword string `json:"repeatPassword"`
 }
 
-func (h Controller.Handler) RegisterUser(c *gin.Context) {
+func RegisterUser(c *gin.Context, h *gorm.DB) {
 	var dataForm RegForm
 
 	if err := c.ShouldBind(&dataForm); err != nil {
@@ -50,7 +51,7 @@ func (h Controller.Handler) RegisterUser(c *gin.Context) {
 	user.Password = string(hashPass)
 	user.AuthToken = tokenString
 
-	if result := h.DB.Create(&user); result.Error != nil {
+	if result := h.Create(&user); result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при создании пользователя"})
 		return
 	}
